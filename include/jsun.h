@@ -34,7 +34,13 @@ enum jsun_result {
     JSUN_TRUE,
     JSUN_FALSE,
     JSUN_NULL,
-    JSUN_STRING
+    JSUN_STRING,
+    JSUN_OBJECT_OPEN,
+    JSUN_OBJECT_CLOSE,
+    JSUN_ARRAY_OPEN,
+    JSUN_ARRAY_CLOSE,
+    JSUN_COLON,
+    JSUN_COMMA
 };
 
 typedef char jsun_char_t;

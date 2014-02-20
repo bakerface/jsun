@@ -192,6 +192,30 @@ step_start(jsun_private_t *jsun, jsun_char_t value) {
             result = JSUN_NONE;
             break;
 
+        case '[':
+            result = JSUN_ARRAY_OPEN;
+            break;
+
+        case ']':
+            result = JSUN_ARRAY_CLOSE;
+            break;
+
+        case '{':
+            result = JSUN_OBJECT_OPEN;
+            break;
+
+        case '}':
+            result = JSUN_OBJECT_CLOSE;
+            break;
+
+        case ':':
+            result = JSUN_COLON;
+            break;
+
+        case ',':
+            result = JSUN_COMMA;
+            break;
+
         case '\f':
         case '\n':
         case '\r':

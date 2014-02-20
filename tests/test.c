@@ -130,6 +130,32 @@ main(void) {
     assert(jsun_step(jsun, '"')  == JSUN_STRING);
     assert(jsun_content_equals(jsun, "\b\f\n\r\t\v\0\""));
 
+    jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, '{') == JSUN_OBJECT_OPEN);
+    assert(jsun_step(jsun, '"') == JSUN_NONE);
+    assert(jsun_step(jsun, 'k') == JSUN_NONE);
+    assert(jsun_step(jsun, 'e') == JSUN_NONE);
+    assert(jsun_step(jsun, 'y') == JSUN_NONE);
+    assert(jsun_step(jsun, '"') == JSUN_STRING);
+    assert(jsun_step(jsun, ':') == JSUN_COLON);
+    assert(jsun_step(jsun, '"') == JSUN_NONE);
+    assert(jsun_step(jsun, 'v') == JSUN_NONE);
+    assert(jsun_step(jsun, 'a') == JSUN_NONE);
+    assert(jsun_step(jsun, 'l') == JSUN_NONE);
+    assert(jsun_step(jsun, 'u') == JSUN_NONE);
+    assert(jsun_step(jsun, 'e') == JSUN_NONE);
+    assert(jsun_step(jsun, '"') == JSUN_STRING);
+    assert(jsun_step(jsun, '}') == JSUN_OBJECT_CLOSE);
+
+    jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, '[') == JSUN_ARRAY_OPEN);
+    assert(jsun_step(jsun, '{') == JSUN_OBJECT_OPEN);
+    assert(jsun_step(jsun, '}') == JSUN_OBJECT_CLOSE);
+    assert(jsun_step(jsun, ',') == JSUN_COMMA);
+    assert(jsun_step(jsun, '{') == JSUN_OBJECT_OPEN);
+    assert(jsun_step(jsun, '}') == JSUN_OBJECT_CLOSE);
+    assert(jsun_step(jsun, ']') == JSUN_ARRAY_CLOSE);
+
     return 0;
 }
 
