@@ -29,10 +29,21 @@ main(void) {
     jsun_t jsun[32];
 
     jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, '_') == JSUN_ERROR);
+
+    jsun_init(jsun, sizeof(jsun));
     assert(jsun_step(jsun, 't') == JSUN_NONE);
     assert(jsun_step(jsun, 'r') == JSUN_NONE);
     assert(jsun_step(jsun, 'u') == JSUN_NONE);
     assert(jsun_step(jsun, 'e') == JSUN_TRUE);
+    assert(jsun_content_length(jsun) == 0);
+
+    jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, 't') == JSUN_NONE);
+    assert(jsun_step(jsun, 'r') == JSUN_NONE);
+    assert(jsun_step(jsun, 'u') == JSUN_NONE);
+    assert(jsun_step(jsun, '_') == JSUN_ERROR);
+    assert(jsun_content_length(jsun) == 0);
 
     jsun_init(jsun, sizeof(jsun));
     assert(jsun_step(jsun, 'f') == JSUN_NONE);
@@ -40,12 +51,33 @@ main(void) {
     assert(jsun_step(jsun, 'l') == JSUN_NONE);
     assert(jsun_step(jsun, 's') == JSUN_NONE);
     assert(jsun_step(jsun, 'e') == JSUN_FALSE);
+    assert(jsun_content_length(jsun) == 0);
+
+    jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, 'f') == JSUN_NONE);
+    assert(jsun_step(jsun, 'a') == JSUN_NONE);
+    assert(jsun_step(jsun, 'l') == JSUN_NONE);
+    assert(jsun_step(jsun, 's') == JSUN_NONE);
+    assert(jsun_step(jsun, '_') == JSUN_ERROR);
+    assert(jsun_content_length(jsun) == 0);
 
     jsun_init(jsun, sizeof(jsun));
     assert(jsun_step(jsun, 'n') == JSUN_NONE);
     assert(jsun_step(jsun, 'u') == JSUN_NONE);
     assert(jsun_step(jsun, 'l') == JSUN_NONE);
     assert(jsun_step(jsun, 'l') == JSUN_NULL);
+    assert(jsun_content_length(jsun) == 0);
+
+    jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, 'n') == JSUN_NONE);
+    assert(jsun_step(jsun, 'u') == JSUN_NONE);
+    assert(jsun_step(jsun, 'l') == JSUN_NONE);
+    assert(jsun_step(jsun, '_') == JSUN_ERROR);
+    assert(jsun_content_length(jsun) == 0);
+
+    jsun_init(jsun, (jsun_size_t) (jsun_content(jsun) - jsun));
+    assert(jsun_step(jsun, '"') == JSUN_NONE);
+    assert(jsun_step(jsun, 's') == JSUN_ERROR);
 
     jsun_init(jsun, sizeof(jsun));
     assert(jsun_step(jsun, '"') == JSUN_NONE);
@@ -56,23 +88,37 @@ main(void) {
     assert(jsun_step(jsun, 'n') == JSUN_NONE);
     assert(jsun_step(jsun, 'g') == JSUN_NONE);
     assert(jsun_step(jsun, '"') == JSUN_STRING);
+    assert(!jsun_content_equals(jsun, "\"string\""));
     assert(jsun_content_equals(jsun, "string"));
 
     jsun_init(jsun, sizeof(jsun));
     assert(jsun_step(jsun, '"')  == JSUN_NONE);
-    assert(jsun_step(jsun, 'e')  == JSUN_NONE);
-    assert(jsun_step(jsun, 's')  == JSUN_NONE);
-    assert(jsun_step(jsun, 'c')  == JSUN_NONE);
-    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, '\n') == JSUN_ERROR);
+    assert(jsun_content_length(jsun) == 0);
+
+    jsun_init(jsun, sizeof(jsun));
     assert(jsun_step(jsun, '"')  == JSUN_NONE);
-    assert(jsun_step(jsun, 'a')  == JSUN_NONE);
-    assert(jsun_step(jsun, 'p')  == JSUN_NONE);
-    assert(jsun_step(jsun, 'e')  == JSUN_NONE);
-    assert(jsun_step(jsun, 'd')  == JSUN_NONE);
+    assert(jsun_step(jsun, 0x7f) == JSUN_ERROR);
+    assert(jsun_content_length(jsun) == 0);
+
+    jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, '"')  == JSUN_NONE);
+    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, 'b')  == JSUN_NONE);
+    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, 'f')  == JSUN_NONE);
     assert(jsun_step(jsun, '\\') == JSUN_NONE);
     assert(jsun_step(jsun, 'n')  == JSUN_NONE);
+    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, 'r')  == JSUN_NONE);
+    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, 't')  == JSUN_NONE);
+    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, 'v')  == JSUN_NONE);
+    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, '0')  == JSUN_NONE);
     assert(jsun_step(jsun, '"')  == JSUN_STRING);
-    assert(jsun_content_equals(jsun, "esc\"aped\n"));
+    assert(jsun_content_equals(jsun, "\b\f\n\r\t\v\0"));
 
     return 0;
 }
