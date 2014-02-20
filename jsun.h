@@ -33,11 +33,12 @@ typedef enum jsun_result {
     JSUN_ERROR,
     JSUN_TRUE,
     JSUN_FALSE,
-    JSUN_NULL
+    JSUN_NULL,
+    JSUN_STRING
 } jsun_result_t;
 
 typedef char jsun_char_t;
-typedef unsigned int jsun_size_t;
+typedef unsigned char jsun_size_t;
 typedef jsun_char_t jsun_t;
 
 extern void
@@ -47,10 +48,13 @@ extern jsun_result_t
 jsun_step(jsun_t *jsun, jsun_char_t value);
 
 extern jsun_char_t *
-jsun_content(jsun_t *jsun);
+jsun_content(const jsun_t *jsun);
 
 extern jsun_size_t
-jsun_content_length(jsun_t *jsun);
+jsun_content_length(const jsun_t *jsun);
+
+extern jsun_size_t
+jsun_content_equals(const jsun_t *jsun, const jsun_char_t *content);
 
 #ifdef __cplusplus
 }

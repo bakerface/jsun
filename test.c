@@ -23,6 +23,7 @@
 
 #include <jsun.h>
 #include <assert.h>
+#include <string.h>
 
 int
 main(void) {
@@ -35,24 +36,11 @@ main(void) {
     assert(jsun_step(jsun, 'e') == JSUN_TRUE);
 
     jsun_init(jsun, sizeof(jsun));
-    assert(jsun_step(jsun, 't') == JSUN_NONE);
-    assert(jsun_step(jsun, 'r') == JSUN_NONE);
-    assert(jsun_step(jsun, 'u') == JSUN_NONE);
-    assert(jsun_step(jsun, 'x') == JSUN_ERROR);
-
-    jsun_init(jsun, sizeof(jsun));
     assert(jsun_step(jsun, 'f') == JSUN_NONE);
     assert(jsun_step(jsun, 'a') == JSUN_NONE);
     assert(jsun_step(jsun, 'l') == JSUN_NONE);
     assert(jsun_step(jsun, 's') == JSUN_NONE);
     assert(jsun_step(jsun, 'e') == JSUN_FALSE);
-
-    jsun_init(jsun, sizeof(jsun));
-    assert(jsun_step(jsun, 'f') == JSUN_NONE);
-    assert(jsun_step(jsun, 'a') == JSUN_NONE);
-    assert(jsun_step(jsun, 'l') == JSUN_NONE);
-    assert(jsun_step(jsun, 's') == JSUN_NONE);
-    assert(jsun_step(jsun, 'x') == JSUN_ERROR);
 
     jsun_init(jsun, sizeof(jsun));
     assert(jsun_step(jsun, 'n') == JSUN_NONE);
@@ -61,8 +49,30 @@ main(void) {
     assert(jsun_step(jsun, 'l') == JSUN_NULL);
 
     jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, '"') == JSUN_NONE);
+    assert(jsun_step(jsun, 's') == JSUN_NONE);
+    assert(jsun_step(jsun, 't') == JSUN_NONE);
+    assert(jsun_step(jsun, 'r') == JSUN_NONE);
+    assert(jsun_step(jsun, 'i') == JSUN_NONE);
     assert(jsun_step(jsun, 'n') == JSUN_NONE);
-    assert(jsun_step(jsun, 'u') == JSUN_NONE);
-    assert(jsun_step(jsun, 'l') == JSUN_NONE);
-    assert(jsun_step(jsun, 'x') == JSUN_ERROR);
+    assert(jsun_step(jsun, 'g') == JSUN_NONE);
+    assert(jsun_step(jsun, '"') == JSUN_STRING);
+    assert(jsun_content_equals(jsun, "string"));
+
+    jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, '"')  == JSUN_NONE);
+    assert(jsun_step(jsun, 'e')  == JSUN_NONE);
+    assert(jsun_step(jsun, 's')  == JSUN_NONE);
+    assert(jsun_step(jsun, 'c')  == JSUN_NONE);
+    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, '"')  == JSUN_NONE);
+    assert(jsun_step(jsun, 'a')  == JSUN_NONE);
+    assert(jsun_step(jsun, 'p')  == JSUN_NONE);
+    assert(jsun_step(jsun, 'e')  == JSUN_NONE);
+    assert(jsun_step(jsun, 'd')  == JSUN_NONE);
+    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, 'n')  == JSUN_NONE);
+    assert(jsun_step(jsun, '"')  == JSUN_STRING);
+    assert(jsun_content_equals(jsun, "esc\"aped\n"));
 }
+

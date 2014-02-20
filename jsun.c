@@ -43,178 +43,121 @@ static jsun_result_t
 step(jsun_private_t *jsun, jsun_char_t value);
 
 static jsun_result_t
-step_tru(jsun_private_t *jsun, jsun_char_t value) {
+step_quote(jsun_private_t *jsun, jsun_char_t value);
+
+static jsun_result_t
+append(jsun_private_t *jsun, jsun_char_t value) {
     jsun_result_t result = JSUN_ERROR;
 
-    switch (value) {
-        case 'e':
-            jsun->header.step = step;
-            result = JSUN_TRUE;
-            break;
-
-        default:
-            break;
+    if (jsun->header.content_length < jsun->header.size) {
+        jsun->content[jsun->header.content_length++] = value;
+        result = JSUN_NONE;
     }
 
     return result;
+}
+
+static jsun_result_t
+step_escape(jsun_private_t *jsun, jsun_char_t value) {
+    jsun->header.step = step_quote;
+
+    switch (value) {
+        case  'b': value = '\b'; break;
+        case  'f': value = '\f'; break;
+        case  'n': value = '\n'; break;
+        case  'r': value = '\r'; break;
+        case  't': value = '\t'; break;
+        case  'v': value = '\v'; break;
+        case  '0': value = '\0'; break;
+        default: break;
+    }
+
+    return append(jsun, value);
+}
+
+static jsun_result_t
+step_quote(jsun_private_t *jsun, jsun_char_t value) {
+    jsun_result_t result = JSUN_ERROR;
+
+    if (value == '"') {
+        jsun->header.step = step;
+        result = JSUN_STRING;
+    }
+    else if (value == '\\') {
+        jsun->header.step = step_escape;
+        result = JSUN_NONE;
+    }
+    else if ((' ' <= value) && (value <= '~')) {
+        result = append(jsun, value);
+    }
+
+    return result;
+}
+
+static jsun_result_t
+step_tru(jsun_private_t *jsun, jsun_char_t value) {
+    jsun->header.step = step;
+    return (value == 'e') ? JSUN_TRUE : JSUN_ERROR;
 }
 
 static jsun_result_t
 step_tr(jsun_private_t *jsun, jsun_char_t value) {
-    jsun_result_t result = JSUN_ERROR;
-
-    switch (value) {
-        case 'u':
-            jsun->header.step = step_tru;
-            result = JSUN_NONE;
-            break;
-
-        default:
-            break;
-    }
-
-    return result;
+    jsun->header.step = step_tru;
+    return (value == 'u') ? JSUN_NONE : JSUN_ERROR;
 }
 
 static jsun_result_t
 step_t(jsun_private_t *jsun, jsun_char_t value) {
-    jsun_result_t result = JSUN_ERROR;
-
-    switch (value) {
-        case 'r':
-            jsun->header.step = step_tr;
-            result = JSUN_NONE;
-            break;
-
-        default:
-            break;
-    }
-
-    return result;
-}
-
-static jsun_result_t
-step_fals(jsun_private_t *jsun, jsun_char_t value) {
-    jsun_result_t result = JSUN_ERROR;
-
-    switch (value) {
-        case 'e':
-            jsun->header.step = step;
-            result = JSUN_FALSE;
-            break;
-
-        default:
-            break;
-    }
-
-    return result;
-}
-
-static jsun_result_t
-step_fal(jsun_private_t *jsun, jsun_char_t value) {
-    jsun_result_t result = JSUN_ERROR;
-
-    switch (value) {
-        case 's':
-            jsun->header.step = step_fals;
-            result = JSUN_NONE;
-            break;
-
-        default:
-            break;
-    }
-
-    return result;
-}
-
-static jsun_result_t
-step_fa(jsun_private_t *jsun, jsun_char_t value) {
-    jsun_result_t result = JSUN_ERROR;
-
-    switch (value) {
-        case 'l':
-            jsun->header.step = step_fal;
-            result = JSUN_NONE;
-            break;
-
-        default:
-            break;
-    }
-
-    return result;
-}
-
-static jsun_result_t
-step_f(jsun_private_t *jsun, jsun_char_t value) {
-    jsun_result_t result = JSUN_ERROR;
-
-    switch (value) {
-        case 'a':
-            jsun->header.step = step_fa;
-            result = JSUN_NONE;
-            break;
-
-        default:
-            break;
-    }
-
-    return result;
+    jsun->header.step = step_tr;
+    return (value == 'r') ? JSUN_NONE : JSUN_ERROR;
 }
 
 static jsun_result_t
 step_nul(jsun_private_t *jsun, jsun_char_t value) {
-    jsun_result_t result = JSUN_ERROR;
-
-    switch (value) {
-        case 'l':
-            jsun->header.step = step;
-            result = JSUN_NULL;
-            break;
-
-        default:
-            break;
-    }
-
-    return result;
+    jsun->header.step = step;
+    return (value == 'l') ? JSUN_NULL : JSUN_ERROR;
 }
 
 static jsun_result_t
 step_nu(jsun_private_t *jsun, jsun_char_t value) {
-    jsun_result_t result = JSUN_ERROR;
-
-    switch (value) {
-        case 'l':
-            jsun->header.step = step_nul;
-            result = JSUN_NONE;
-            break;
-
-        default:
-            break;
-    }
-
-    return result;
+    jsun->header.step = step_nul;
+    return (value == 'l') ? JSUN_NONE : JSUN_ERROR;
 }
 
 static jsun_result_t
 step_n(jsun_private_t *jsun, jsun_char_t value) {
-    jsun_result_t result = JSUN_ERROR;
+    jsun->header.step = step_nu;
+    return (value == 'u') ? JSUN_NONE : JSUN_ERROR;
+}
 
-    switch (value) {
-        case 'u':
-            jsun->header.step = step_nu;
-            result = JSUN_NONE;
-            break;
+static jsun_result_t
+step_fals(jsun_private_t *jsun, jsun_char_t value) {
+    jsun->header.step = step;
+    return (value == 'e') ? JSUN_FALSE : JSUN_ERROR;
+}
 
-        default:
-            break;
-    }
+static jsun_result_t
+step_fal(jsun_private_t *jsun, jsun_char_t value) {
+    jsun->header.step = step_fals;
+    return (value == 's') ? JSUN_NONE : JSUN_ERROR;
+}
 
-    return result;
+static jsun_result_t
+step_fa(jsun_private_t *jsun, jsun_char_t value) {
+    jsun->header.step = step_fal;
+    return (value == 'l') ? JSUN_NONE : JSUN_ERROR;
+}
+
+static jsun_result_t
+step_f(jsun_private_t *jsun, jsun_char_t value) {
+    jsun->header.step = step_fa;
+    return (value == 'a') ? JSUN_NONE : JSUN_ERROR;
 }
 
 jsun_result_t
 step(jsun_private_t *jsun, jsun_char_t value) {
     jsun_result_t result = JSUN_ERROR;
+    jsun->header.content_length = 0;
 
     switch (value) {
         case 'f':
@@ -229,6 +172,11 @@ step(jsun_private_t *jsun, jsun_char_t value) {
 
         case 't':
             jsun->header.step = step_t;
+            result = JSUN_NONE;
+            break;
+
+        case '"':
+            jsun->header.step = step_quote;
             result = JSUN_NONE;
             break;
 
@@ -254,12 +202,25 @@ jsun_step(jsun_t *jsun, jsun_char_t value) {
 }
 
 jsun_char_t *
-jsun_content(jsun_t *jsun) {
+jsun_content(const jsun_t *jsun) {
     return jsun_private(jsun)->content;
 }
 
 jsun_size_t
-jsun_content_length(jsun_t *jsun) {
+jsun_content_length(const jsun_t *jsun) {
     return jsun_private(jsun)->header.content_length;
 }
 
+jsun_size_t
+jsun_content_equals(const jsun_t *jsun, const jsun_char_t *content) {
+    jsun_size_t i;
+    jsun_size_t length = jsun_content_length(jsun);
+
+    for (i = 0; i < length; i++) {
+        if (jsun_content(jsun)[i] != content[i]) {
+            return 0;
+        }
+    }
+
+    return (content[i] == '\0');
+}
