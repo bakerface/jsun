@@ -28,17 +28,18 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef enum jsun_result {
+enum jsun_result {
     JSUN_NONE,
     JSUN_ERROR,
     JSUN_TRUE,
     JSUN_FALSE,
     JSUN_NULL,
     JSUN_STRING
-} jsun_result_t;
+};
 
 typedef char jsun_char_t;
 typedef unsigned char jsun_size_t;
+typedef unsigned char jsun_result_t;
 typedef jsun_char_t jsun_t;
 
 extern void
