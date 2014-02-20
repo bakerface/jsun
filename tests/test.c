@@ -117,8 +117,10 @@ main(void) {
     assert(jsun_step(jsun, 'v')  == JSUN_NONE);
     assert(jsun_step(jsun, '\\') == JSUN_NONE);
     assert(jsun_step(jsun, '0')  == JSUN_NONE);
+    assert(jsun_step(jsun, '\\') == JSUN_NONE);
+    assert(jsun_step(jsun, '"')  == JSUN_NONE);
     assert(jsun_step(jsun, '"')  == JSUN_STRING);
-    assert(jsun_content_equals(jsun, "\b\f\n\r\t\v\0"));
+    assert(jsun_content_equals(jsun, "\b\f\n\r\t\v\0\""));
 
     return 0;
 }
