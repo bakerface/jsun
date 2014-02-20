@@ -32,7 +32,8 @@ typedef enum jsun_result {
     JSUN_NONE,
     JSUN_ERROR,
     JSUN_TRUE,
-    JSUN_FALSE
+    JSUN_FALSE,
+    JSUN_NULL
 } jsun_result_t;
 
 typedef char jsun_char_t;
@@ -56,3 +57,4 @@ jsun_content_length(jsun_t *jsun);
 #endif /* __cplusplus */
 
 #endif /* JSUN_H_ */
+

@@ -53,4 +53,16 @@ main(void) {
     assert(jsun_step(jsun, 'l') == JSUN_NONE);
     assert(jsun_step(jsun, 's') == JSUN_NONE);
     assert(jsun_step(jsun, 'x') == JSUN_ERROR);
+
+    jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, 'n') == JSUN_NONE);
+    assert(jsun_step(jsun, 'u') == JSUN_NONE);
+    assert(jsun_step(jsun, 'l') == JSUN_NONE);
+    assert(jsun_step(jsun, 'l') == JSUN_NULL);
+
+    jsun_init(jsun, sizeof(jsun));
+    assert(jsun_step(jsun, 'n') == JSUN_NONE);
+    assert(jsun_step(jsun, 'u') == JSUN_NONE);
+    assert(jsun_step(jsun, 'l') == JSUN_NONE);
+    assert(jsun_step(jsun, 'x') == JSUN_ERROR);
 }
