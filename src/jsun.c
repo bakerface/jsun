@@ -192,6 +192,15 @@ step_start(jsun_private_t *jsun, jsun_char_t value) {
             result = JSUN_NONE;
             break;
 
+        case '\f':
+        case '\n':
+        case '\r':
+        case '\t':
+        case '\v':
+        case  ' ':
+            result = JSUN_NONE;
+            break;
+
         default:
             break;
     }
