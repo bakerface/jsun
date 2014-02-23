@@ -1,4 +1,3 @@
 jsun
 ====
-
-Smallest ANSI C JSON parser
+**Smallest ANSI C JSON parser**
